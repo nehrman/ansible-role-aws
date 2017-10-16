@@ -1,0 +1,83 @@
+- name: Create security group for instances
+  ec2_group:
+    name: "{{ ec2_environment }}-sec-group"
+    description: "New security for {{ ec2_environment }} Instances"
+    region: "{{ ec2_region }}"
+    vpc_id: "{{ ec2_vpc_id }}"
+    rules:
+      - proto: "tcp"
+        ports:
+          - 22
+          - 80
+          - 443
+          - 389
+          - 5986
+        cidr_ip: "0.0.0.0/0"
+    rules_egress:
+      - proto: "all"
+        cidr_ip: "0.0.0.0/0"
+  register: secgrp
+
+- name: Create EC2 Linux Instance
+  ec2:
+    region: "{{ ec2_region }}"
+    group_id: "{{ secgrp.group_id }}"
+    keypair: "{{ ec2_keypair }}"
+    instance_type: "{{ ec2_instance_type }}"
+    image: "{{ ami_id }}"
+    vpc_subnet_id: "{{ ec2_subnet_id  }}"
+    assign_public_ip: yes
+    wait: True
+    wait_timeout: 600
+    instance_tags:
+      Name: "{{ customer }}-{{ vpc_name }}-{{ instance_name }}-{{ ec2_environment }}"
+      Environment: "{{ ec2_environment }}"
+      Server_Role: "{{ instance_role }}"
+    exact_count: "{{ ec2_instance_count }}"
+    count_tag:
+      Server_Role: "{{ instance_role }}"
+      Environment: "{{ ec2_environment }}"
+  register: ec2
+  when: os_type == "Linux"
+
+- name: Create EC2 Windows Instance
+  ec2:
+    region: "{{ ec2_region }}"
+    group_id: "{{ secgrp.group_id }}"
+    keypair: "{{ ec2_keypair }}"
+    instance_type: "{{ ec2_instance_type }}"
+    image: "{{ ami_id }}"
+    vpc_subnet_id: "{{ ec2_subnet_id  }}"
+    assign_public_ip: yes
+    wait: True
+    wait_timeout: 600
+    instance_tags:
+      Name: "{{ customer }}-{{ vpc_name }}-{{ instance_name }}-{{ ec2_environment }}"
+      Environment: "{{ ec2_environment }}"
+      Server_Role: "{{ instance_role }}"
+    exact_count: "{{ ec2_instance_count }}"
+    count_tag:
+      Server_Role: "{{ instance_role }}"
+      Environment: "{{ ec2_environment }}"
+    user_data: "{{ lookup('templates', 'userdata.txt.j2') }}"
+  register: ec2
+  when: os_type == "Windows"
+
+- name: Add instances to inventory
+  local_action:
+    module: add_host
+    name: "{{ item.public_ip }}"
+    ansible_host: "{{ item.public_ip }}"
+    ansible_user: "{{ instance_ansible_user }}"
+    ansible_port: "{{ instance_ansible_port }}"
+    groups:
+      - "ec2"
+      - "{{ instance_role }}"
+      - "{{ os_type }}"
+#         - "tag_Environment_{{ item.item.Environment }}"
+  with_items: "{{ ec2.instances }}"
+  when: ec2
+
+- name: wait for instances to be up and running
+  wait_for_connection:
+    delay: 120

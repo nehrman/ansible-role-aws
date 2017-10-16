@@ -1,0 +1,17 @@
+---
+customer: 'effisoft'
+ami_linux: "ami-5364c43c"
+ami_windows: "ami-b0e240df"
+ec2_environment: "Prod"
+ec2_region: eu-central-1
+vpc_name: demo-vpc
+ec2_vpc_id: vpc-9fdb97f7
+ec2_instance_type: t2.micro
+ec2_keypair: demo
+ec2_security_group: default
+ec2_instance_count: 1
+ec2_subnet_id: subnet-f18a9d99
+ec2_tag: demo
+ec2_tag_name_prefix: neh
+ec2_hosts: all
+os_type: "Linux"
