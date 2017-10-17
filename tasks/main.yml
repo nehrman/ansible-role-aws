@@ -1,7 +1,7 @@
 - name: Create security group for instances
   ec2_group:
     name: "{{ ec2_security_group }}"
-    description: "New security for {{ ec2_environment }} Instances"
+    description: "{{ ec2_security_group_description }}"
     region: "{{ ec2_region }}"
     vpc_id: "{{ ec2_vpc_id }}"
     rules:
