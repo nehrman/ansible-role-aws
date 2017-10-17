@@ -63,6 +63,9 @@
   register: output_ec2
   when: os_type == "windows"
 
+- debug: var=item
+  with_items: "{{ output_ec2.tagged_instances }}"
+
 - name: Add instances to inventory
   local_action:
     module: add_host
