@@ -1,7 +1,7 @@
 ---
 customer: 'effisoft'
-ami_linux: "ami-5364c43c"
-ami_windows: "ami-b0e240df"
+ami_linux: "ami-0d063c6b"
+ami_windows: "ami-4924c530"
 ec2_environment: "Prod"
 ec2_region: eu-central-1
 vpc_name: demo-vpc
