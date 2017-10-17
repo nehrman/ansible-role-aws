@@ -38,7 +38,7 @@
       Server_Role: "{{ instance_role }}"
       Environment: "{{ ec2_environment }}"
   register: ec2
-  when: os_type == "Linux"
+  when: os_type == "linux"
 
 - name: Create EC2 Windows Instance
   ec2:
@@ -61,7 +61,7 @@
       Environment: "{{ ec2_environment }}"
     user_data: "{{ lookup('templates', 'userdata.txt.j2') }}"
   register: ec2
-  when: os_type == "Windows"
+  when: os_type == "windows"
 
 - name: Add instances to inventory
   local_action:

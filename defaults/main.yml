@@ -15,4 +15,4 @@ ec2_subnet_id: subnet-f18a9d99
 ec2_tag: demo
 ec2_tag_name_prefix: neh
 ec2_hosts: all
-os_type: "Linux"
+os_type: "linux"
