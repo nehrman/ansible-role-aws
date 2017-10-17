@@ -69,8 +69,8 @@
 - name: Add instances to inventory
   local_action:
     module: add_host
-    name: "{{ item.tagged_instaces.public_ip }}"
-    ansible_host: "{{ item.tagged_instance.public_ip }}"
+    name: "{{ item.public_ip }}"
+    ansible_host: "{{ item.public_ip }}"
     ansible_user: "{{ instance_ansible_user }}"
     ansible_port: "{{ instance_ansible_port }}"
     groups:
@@ -78,7 +78,7 @@
       - "{{ instance_role }}"
       - "{{ os_type }}"
 #         - "tag_Environment_{{ item.item.Environment }}"
-  with_items: "{{ output_ec2.results }}"
+  with_items: "{{ tagged_instances }}"
 
 - name: wait for instances to be up and running
   wait_for_connection:
