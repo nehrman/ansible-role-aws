@@ -40,6 +40,7 @@
   when: os_type == "linux"
   register: output_ec2
 
+- debug: var=output_ec2
 
 - name: Create EC2 Windows Instance
   ec2:
