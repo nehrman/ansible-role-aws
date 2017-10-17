@@ -75,7 +75,7 @@
       - "{{ instance_role }}"
       - "{{ os_type }}"
 #         - "tag_Environment_{{ item.item.Environment }}"
-  with_items: output_ec2.tagged_instances
+  with_items: "{{ output_ec2.tagged_instances }}"
 
 - name: wait for instances to be up and running
   wait_for_connection:
