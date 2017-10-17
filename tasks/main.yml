@@ -74,7 +74,7 @@
       Server_Role: "{{ instance_role }}"
       Environment: "{{ ec2_environment }}"
       Application: ""
-    user_data: "{{ lookup('templates', 'userdata.txt.j2') }}"
+    user_data: "{{ lookup('templates', 'user_data.txt.j2') }}"
   when: os_type == "windows"
   register: output_ec2_win
 
