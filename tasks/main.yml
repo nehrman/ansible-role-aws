@@ -40,8 +40,6 @@
   when: os_type == "linux"
   register: output_ec2
 
-- debug: var=output_ec2
-
 - name: Create EC2 Windows Instance
   ec2:
     region: "{{ ec2_region }}"
@@ -61,14 +59,17 @@
     count_tag:
       Server_Role: "{{ instance_role }}"
       Environment: "{{ ec2_environment }}"
+      Application: ""
     user_data: "{{ lookup('templates', 'userdata.txt.j2') }}"
   when: os_type == "windows"
   register: output_ec2
 
+- debug: var=output_ec2
+
 - name: Add instances to inventory
   add_host:
-    name: "{{ item.tagged_instance.public_ip }}"
-    ansible_host: "{{ item.tagged_instances.public_ip }}"
+    name: "{{ item.public_ip }}"
+    ansible_host: "{{ item.public_ip }}"
     ansible_user: "{{ instance_ansible_user }}"
     ansible_port: "{{ instance_ansible_port }}"
     groups:
@@ -76,7 +77,7 @@
       - "{{ instance_role }}"
       - "{{ os_type }}"
 #         - "tag_Environment_{{ item.item.Environment }}"
-  with_items: "{{ output_ec2.instances }}"
+  with_items: "{{ output_ec2.tagged_instances }}"
 
 - name: wait for instances to be up and running
   wait_for_connection:
