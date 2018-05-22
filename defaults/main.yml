@@ -1,5 +1,5 @@
 ---
-customer: "effisoft"
+customer: "Customer"
 instance_name: "db"
 instance_role: ""
 instance_ansible_port: "22"
